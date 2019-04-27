@@ -23,34 +23,32 @@ public class WriterToDB implements Runnable {
 
 	public void run() {
 		while (true) {
-			while (!dates.isEmpty()) {
-				Connection connection = connectionManager.getConnection();
-				if (connection != null) {
-					Date currentInsertDate = dates.peek();
-					if (currentInsertDate != null) {
-						// write to database
-						String sql = "INSERT INTO timestamp(stampname) VALUES (?)";
-						try {
+			try  {
+				// Connecting to Database
+				Connection connection = connectionManager.getConnection(); 
+				while (!dates.isEmpty()) {
+					if (connection != null) {
+						Date currentInsertDate = dates.peek();
+						if (currentInsertDate != null) {
+							// Inserting time from Queue to database
+							String sql = "INSERT INTO timestamp(stampname) VALUES (?)";
 							PreparedStatement statement = connection.prepareStatement(sql);
 							statement.setString(1, currentInsertDate.toString());
 							statement.execute();
 							dates.remove();
-						} catch (SQLException e) {
-							 
-							try {
-								System.out.println("Can't connect to the database ");
-								Thread.sleep(5000);
-							} catch (InterruptedException e1) {
-								// TODO Auto-generated catch block
-								e1.printStackTrace();
-							}
 						}
-
 					}
 				}
-
+			} catch (SQLException e) {
+				// If connection to Database stops after 5 seconds it reconnects 
+				 logger.info("Can't connect to the database ");
+				try {
+					Thread.sleep(5000);
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
-
 }

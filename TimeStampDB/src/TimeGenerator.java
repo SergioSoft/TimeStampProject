@@ -15,6 +15,7 @@ public class TimeGenerator implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
+			// generating time stamp each second 
 			dates.add(new Date());
 			try {
 				Thread.sleep(1000);
