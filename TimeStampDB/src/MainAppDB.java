@@ -10,13 +10,13 @@ public class MainAppDB {
 	public static void main(String[] argv) throws SQLException {
 
 		Queue<Date> dates = new ConcurrentLinkedQueue<>();
-		if (argv[0].equals("0")) {
+		if (argv.length == 0) {
 			logger.info("Writing timeStamp to Database");
 			TimeGenerator threadPublishTime = new TimeGenerator(dates);
 			WriterToDB threadWriteTimeToDB = new WriterToDB(dates);
 			threadPublishTime.run();
 			threadWriteTimeToDB.run();
-		} else if (argv[1].equals("-p")) {
+		} else if (argv[0].equals("-p")) {
 			DatabaseReader readFromDB = new DatabaseReader();
 			readFromDB.readFromDB();
 
